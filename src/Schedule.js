@@ -10,7 +10,7 @@ todo:
 const Schedule = ({ timer }) => {
   const [timeNow, setTimeNow] = useState();
   const [alertAt, setAlertAt] = useState();
-  const [active, setActive] = useState(); //so only fires once per day.
+  const [active, setActive] = useState(); //so only fires once per day
   const activeLocal = useRef();
 
   var HeartBeatSubscriber = function (msg, data) {
@@ -19,13 +19,13 @@ const Schedule = ({ timer }) => {
 
     if (activeLocal.current) {
       setTimeNow(now);
+
       if (now >= alertAt) {
-        // console.log('now - alertAt', now - alertAt, activeLocal);
-        if (now - alertAt < 1000) {
+        if (now - alertAt <= 1000) {
           console.log('TRIG');
           activeLocal.current = false;
           setActive(false);
-        } else {
+        } else if (activeLocal.current) {
           console.log(
             'scheduled triggered',
             (now - alertAt) / 1000,
@@ -59,6 +59,7 @@ const Schedule = ({ timer }) => {
     <div>
       Schedule: {alertAt} Time now: {timeNow} active:{' '}
       {active ? 'active' : 'deactivated'}
+      {timer.schedule.alertAt}
     </div>
   );
 };

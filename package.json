@@ -13,8 +13,8 @@
     "react-scripts": "5.0.1"
   },
   "scripts": {
-    "start": "cp src/indexDev.js src/index.js && react-scripts start",
-    "build": "cp src/indexProd.js src/index.js && GENERATE_SOURCEMAP=true react-scripts build  && ./pushtosite.sh",
+    "start": "react-scripts start",
+    "build": "GENERATE_SOURCEMAP=true react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

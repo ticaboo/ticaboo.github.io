@@ -22,16 +22,13 @@ const syncSecond = () => {
 };
 
 syncSecond();
+
 /*
     include this hidden component once in application,
-    at App level is good
+    at App/Index level is good
 */
-
 const HeartBeat = () => {
-  // const [, setBeat] = useAtom(heartBeatAtom);
   instance.onmessage = (message) => {
-    //todo: pub.
-    // setBeat(message);
     // publish a topic asynchronously
     //console.log(message);
     PubSub.publish('HEARTBEAT', message);
