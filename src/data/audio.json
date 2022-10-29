@@ -1,0 +1,160 @@
+{
+  "Media": [
+    {
+      "id": 1,
+      "name": "Super Relaxing",
+      "src": "https://www.youtube.com/watch?v=W74E0wWUcqY&list=PLO9Ut0CqA84jx5VYKVw_bWYP1T9zp7rDU",
+      "length": 8
+    },
+    {
+      "id": 2,
+      "name": "tingles",
+      "src": "https://www.youtube.com/watch?v=X1GH9WN92s0&list=PLO9Ut0CqA84gf8F9ASOD3OsvdC0RLemyP",
+      "length": 8
+    },
+    {
+      "id": 3,
+      "name": "100% Energy",
+      "src": "https://www.youtube.com/watch?v=fVPIVD8A8CI&list=PLO9Ut0CqA84hNjwd8B0rC7BwAaJEGpHNl",
+      "length": 8
+    },
+    {
+      "id": 4,
+      "name": "Jazz",
+      "src": " https://www.youtube.com/watch?v=r2S1I_ien6A&list=PLO9Ut0CqA84ipGK6YlkQsE7Qxi3ZC62AT&index=1",
+      "length": 8
+    },
+
+    {
+      "id": 5,
+      "name": "Feel Good POP",
+      "src": "https://www.youtube.com/playlist?list=PLO9Ut0CqA84h-Kl9nyyJ_EHAH9vnqG7FG",
+      "length": 8
+    },
+    {
+      "id": 6,
+      "name": "Indie Morning",
+      "src": "https://www.youtube.com/watch?v=SrkUAC7_lH8&list=PLO9Ut0CqA84hcCGUfB1cmy0psIKcXRNMJ",
+      "length": 8
+    },
+    {
+      "id": 11,
+      "name": "Regae Mix",
+      "src": "https://www.youtube.com/watch?v=OhlAi2FfPhw&list=PLO9Ut0CqA84gYuxqzqTLMtXL6VtMHILid",
+      "length": 8
+    },
+    {
+      "id": 7,
+      "name": "Grooves",
+      "src": "https://www.youtube.com/watch?v=Beld090NIoo&list=PLO9Ut0CqA84jv161N15pltCqenhZrO5us",
+      "length": 8
+    },
+    {
+      "id": 9,
+      "name": "70's Rock",
+      "src": "https://www.youtube.com/playlist?list=PLO9Ut0CqA84hKk17FmwP3vTJC8kdorMHv",
+      "length": 8
+    },
+    {
+      "id": 10,
+      "name": "80's EDM",
+      "src": "https://www.youtube.com/watch?v=TNYGLMQxZ64&list=PLO9Ut0CqA84hHDgW2MvNeErpw0oURJuVm",
+      "length": 8
+    },
+
+    {
+      "id": 12,
+      "name": "80s Alternative",
+      "src": "https://www.youtube.com/watch?v=vSb15Pxswak&list=PLO9Ut0CqA84h1erEa6pAEYMCh28Bu-8-u",
+      "length": 8
+    },
+    {
+      "id": 13,
+      "name": "80s Pop",
+      "src": "https://www.youtube.com/watch?v=avUmHm_4jrU&list=PLO9Ut0CqA84hmsAVPyQCvmWza7XZuPOXm",
+      "length": 8
+    }
+  ],
+  "IntervalSounds": [
+    { "id": 1, "name": "tibetan chime", "src": "tibet.mp3", "length": 8 },
+    {
+      "id": 2,
+      "name": "Tibetan Gong",
+      "src": "tibetan_gong.mp3",
+      "length": 18
+    },
+    { "id": 3, "name": "ting", "src": "ting_iphone.mp3", "length": 3 },
+    { "id": 4, "name": "zen", "src": "zen.mp3", "length": 18 },
+    { "id": 5, "name": "deep bell", "src": "taco_bell.mp3", "length": 2 },
+    { "id": 6, "name": "beaten chime", "src": "chime.mp3", "length": 6 },
+    { "id": 7, "name": "beep", "src": "beep.mp3", "length": 2 },
+    {
+      "id": 8,
+      "name": "cymbal 3s",
+      "src": "cymbal-swell-short.mp3",
+      "length": 3
+    }
+  ],
+  "AlarmSounds": [
+    {
+      "id": 2,
+      "name": "digital rising",
+      "src": "digimba rising.mp3",
+      "length": 60
+    },
+    {
+      "id": 4,
+      "name": "effective",
+      "src": "captstrange.mp3",
+      "length": 6
+    },
+    {
+      "id": 3,
+      "name": "digital alarm",
+      "src": "digimba.mp3",
+      "length": 4
+    },
+    {
+      "id": 1,
+      "name": "default",
+      "src": "pulse-marimba.mp3",
+      "length": 18
+    },
+    {
+      "id": 5,
+      "name": "80s",
+      "src": "Escape-New-Yorkish.mp3",
+      "length": 6
+    },
+    {
+      "id": 6,
+      "name": "big ben",
+      "src": "bing-ben-bong.mp3",
+      "length": 2
+    },
+    {
+      "id": 7,
+      "name": "Tibetan Gong",
+      "src": "tibetan_gong.mp3",
+      "length": 18
+    },
+    {
+      "id": 8,
+      "name": "5 4 3 2 1",
+      "src": "apollo 11 5-1 nrx3.mp3",
+      "length": 18
+    },
+    {
+      "id": 9,
+      "name": "cymbal 3s",
+      "src": "cymbal-swell-short.mp3",
+      "length": 3
+    },
+    {
+      "id": 10,
+      "name": "cymbal 8s",
+      "src": "cymbal-swell-long.mp3",
+      "length": 8
+    }
+  ]
+}
