@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useAtom } from 'jotai';
-import { heartBeatAtom } from './atoms/index';
+import PubSub from 'pubsub-js';
+
 /*
 todo:
     pass in timer prop from list
@@ -8,22 +8,21 @@ todo:
 */
 
 const Schedule = ({ timer }) => {
-  const [beat] = useAtom(heartBeatAtom);
   const [timeNow, setTimeNow] = useState();
   const [alertAt, setAlertAt] = useState();
   const [active, setActive] = useState(); //so only fires once per day
   const activeLocal = useRef();
 
-  useEffect(() => {
-    console.log(beat);
-    const now = beat.data.now;
+  var HeartBeatSubscriber = function (msg, data) {
+    //console.log(msg, data);
+    const now = data.data.now;
 
     if (activeLocal.current) {
       setTimeNow(now);
 
       if (now >= alertAt) {
         if (now - alertAt <= 1000) {
-          console.log('TRIG A');
+          console.log('TRIG');
           activeLocal.current = false;
           setActive(false);
         } else if (activeLocal.current) {
@@ -35,7 +34,9 @@ const Schedule = ({ timer }) => {
         }
       }
     }
-  }, [beat]);
+  };
+
+  var token = PubSub.subscribe('HEARTBEAT', HeartBeatSubscriber); //cleanup on component destroy
 
   useEffect(() => {
     //const inTenSeconds = timer.alertAt + 3000;
@@ -44,9 +45,19 @@ const Schedule = ({ timer }) => {
     setActive(true);
   }, [timer]);
 
+  useEffect(() => {
+    // const inTenSeconds = Date.now() + 3000;
+    // setAlertAt(inTenSeconds);
+    // setActive(true);
+    //on unmount:
+    return () => {
+      PubSub.unsubscribe(token);
+    };
+  }, []);
+
   return (
     <div>
-      Atomic Schedule: {alertAt} Time now: {timeNow} active:{' '}
+      Schedule: {alertAt} Time now: {timeNow} active:{' '}
       {active ? 'active' : 'deactivated'}
       {timer.schedule.alertAt}
     </div>
