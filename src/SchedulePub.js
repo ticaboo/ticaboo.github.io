@@ -56,7 +56,7 @@ const Schedule = ({ timer }) => {
   }, []);
 
   return (
-    <div>
+    <div className="schedule" data-schedule>
       Schedule: {alertAt} Time now: {timeNow} active:{' '}
       {active ? 'active' : 'deactivated'}
       {timer.schedule.alertAt}
