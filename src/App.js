@@ -1,24 +1,23 @@
 import './App.css';
-import HeartBeatPub from './pub/HeartBeatPub';
-//import HeartBeat from './atoms/HeartBeatAtomic';
-import SchedulePub from './SchedulePub';
-//import Schedule from './Schedule';
+import HeartBeat from './pub/HeartBeat';
 import { timerScheduled } from './data/timers';
-import Timer from './TimerPub';
+//import ScheduleGroup from './ScheduleGroup';
+import TimerGroup from './chronos/TimerGroup';
+
+const t1 = { ...timerScheduled, schedule: { alertAt: Date.now() + 5000 } };
+const t2 = { ...timerScheduled, schedule: { alertAt: Date.now() + 10000 } };
+const timers = [t1, t2];
 
 function App() {
-  const t1 = { ...timerScheduled, schedule: { alertAt: Date.now() + 5000 } };
-  const t2 = { ...timerScheduled, schedule: { alertAt: Date.now() + 10000 } };
-
   //const t2 = (timerScheduled.schedule.alertAt = Date.now() + 6000);
   return (
     <div className="App">
-      <HeartBeatPub />
+      <HeartBeat />
+      <TimerGroup timers={timers} />
+      {/* <Schedule key="t1" timer={t1} />
+      <Schedule key="t2" timer={t2} />
 
-      <SchedulePub key="t1" timer={t1} />
-      <SchedulePub key="t2" timer={t2} />
-
-      <Timer timer={t1} />
+      <Timer timer={t1} /> */}
       {/* <HeartBeat />
       <Schedule key="t1" timer={t1} />
       <Schedule key="t1" timer={t2} /> */}

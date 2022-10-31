@@ -27,12 +27,16 @@ syncSecond();
     include this hidden component once in application,
     at App/Index level is good
 */
-const HeartBeatPub = () => {
+const HeartBeat = () => {
   instance.onmessage = (message) => {
-    // publish a topic asynchronously
+    // lish a topic asynchronously
     //console.log(message);
     PubSub.publish('HEARTBEAT', message);
   };
-  return <div className="heart-beat baseWhite">HeartBeat</div>;
+  return (
+    <div data-t-heartbeat className="heart-beat ">
+      HeartBeat
+    </div>
+  );
 };
-export default HeartBeatPub;
+export default HeartBeat;

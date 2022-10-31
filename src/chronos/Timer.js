@@ -16,7 +16,7 @@ const Timer = ({ timer }) => {
   var token = PubSub.subscribe('HEARTBEAT', HeartBeatSubscriber);
 
   return (
-    <div>
+    <div data-t-timer>
       Timer
       <button onClick={toggleActive}> {active ? 'Playing' : 'paused'}</button>
       <div>{active ? timeNow : ''}</div>
