@@ -18,10 +18,7 @@ var token = PubSub.subscribe(topics.HEARTBEAT, subscriberFn);
 
  benefits:
  possible improvements: document/hit/enforce message types of publications/subscriptions.
-
 */
-//const topics = ['HEARTBEAT', 'VIDEO_ID', 'VIDEO_PLAY'];
-//export default topics;
 
 export const HEARTBEAT = Symbol('HEARTBEAT');
 export const VIDEO_ID = Symbol('VIDEO_ID');

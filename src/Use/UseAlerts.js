@@ -19,13 +19,13 @@ const useAlerts = (timerData) => {
   const tabOpener = (url) => {
     // dirty diry render hack to prevent:
     // Cannot update a component (`YTPlayer`) while rendering a different component (`PlayChronos`).
-    //setTimeout(() => {
-    // setVideoID(url); //'NrUIJY_Xu2s'-led zep california
-    // setVideoPlaying(true);
-    PubSub.publish(VIDEO_PLAY, true);
-    PubSub.publish(VIDEO_ID, url);
-    //console.log(url);
-    // }, 100);
+    setTimeout(() => {
+      // setVideoID(url); //'NrUIJY_Xu2s'-led zep california
+      // setVideoPlaying(true);
+      PubSub.publish(VIDEO_ID, url);
+      PubSub.publish(VIDEO_PLAY, true);
+      //console.log(url);
+    }, 100);
   };
 
   const tabHoldingPageLoad = () => {

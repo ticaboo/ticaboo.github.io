@@ -28,6 +28,7 @@ const YTPlayer = () => {
 
   const videoPlayingChange = (msg, data) => {
     setVideoPlaying(data);
+    console.log('videoPlayingChange', data);
   };
   const videoUrlChange = (msg, data) => {
     setVideoID(data);
