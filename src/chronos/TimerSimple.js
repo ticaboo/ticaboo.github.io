@@ -9,8 +9,8 @@ import PlayButton from './subcomponents/buttons/PlayButton';
 import PauseButton from './subcomponents/buttons/PauseButton ';
 import EditButton from './subcomponents/buttons/EditButton';
 
-//import useAlerts from '../Use/useAlerts';
-//import { useAudio } from '../Use/useAudio';
+import useAlerts from '../Use/useAlerts';
+import { useAudio } from '../Use/useAudio';
 //import notify from './notifiy';
 /*
 ok, code doesnt handle minutes, seconds, but it fucking works!
@@ -37,7 +37,7 @@ NXT:
      timer jiggle on seconds change.
     */
 
-const Timer = ({ timer, setPlayerVisible }) => {
+const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
   //const [heartBeatDeltaMS, setHeartBeatDeltaMS] = useState(dateTohms().ms + 1);
 
   const [remaining, setRemaining] = useState(
@@ -47,9 +47,16 @@ const Timer = ({ timer, setPlayerVisible }) => {
   const direction =
     timeToSeconds(timer.timer.h, timer.timer.m, timer.timer.s) === 0 ? 1 : -1;
 
-  //   const togglePause = () => {
-  //     setPause(!pause);
-  //   };
+  const {
+    // sayAloud,
+    // tabOpener,
+    // tabHoldingPageLoad,
+    // intervalActive,
+    hasChainedAction,
+    // intervalDuration,
+    getStartURL,
+    getEndURL
+  } = useAlerts(timer);
 
   useEffect(() => {
     //console.log(timer);
@@ -65,10 +72,18 @@ const Timer = ({ timer, setPlayerVisible }) => {
     }
   };
 
+  /*
+  Does the trick. have to access remaining in useEffect hook. duh
+  do cycle in here 
+  */
   useEffect(() => {
     console.log('remaining', remaining);
     if (remaining === 0) {
       console.log('TRIG', remaining);
+      //   startAudio.toggle();
+      //   startAudio.reset();
+      //   endAudio.toggle();
+      //   endAudio.reset();
     }
   }, [remaining]);
 
@@ -76,21 +91,12 @@ const Timer = ({ timer, setPlayerVisible }) => {
     topics.HEARTBEAT,
     HeartBeatSubscriber
   );
-  //   const {
-  //     hasChainedAction
-  //     // intervalActive,
-  //     // sayAloud,
-  //     // tabOpener,
-  //     // intervalDuration,
-  //     // getStartURL,
-  //     // getEndURL
-  //   } = useAlerts(timer);
 
   const pauser = () => {
     setPause(true);
     console.log('pauser()');
-    // if (startAudio.isPlaying) startAudio.toggle();
-    // if (endAudio.isPlaying) endAudio.toggle();
+    if (startAudio.isPlaying) startAudio.toggle();
+    if (endAudio.isPlaying) endAudio.toggle();
     //setVideoPlaying(false);
     PubSub.publish(topics.VIDEO_PLAY, false);
 
@@ -114,6 +120,17 @@ const Timer = ({ timer, setPlayerVisible }) => {
     //   start();
     // }, 100);
   };
+
+  const startAudio = useAudio({
+    src: getAudioSrc(timer.timer.startAlert, 'AlarmSounds'),
+    loop: false,
+    amplificationMultiplier: 1
+  });
+  const endAudio = useAudio({
+    src: getAudioSrc(timer.timer.alert, 'AlarmSounds'),
+    loop: hasChainedAction(timer) ? false : true,
+    amplificationMultiplier: 1
+  });
 
   return (
     <div className="">
