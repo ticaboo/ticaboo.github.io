@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import PubSub from 'pubsub-js';
-import topics from '../pub/topics';
+import { HEARTBEAT, VIDEO_ID, VIDEO_PLAY } from '../pub/topics';
 import { getAudioSrc, timeToSeconds } from '../Utils';
 import { Clock, OverClock } from './subcomponents/CounterClock';
 import ReplayButton from './subcomponents/buttons/ReplayButton';
@@ -93,10 +93,7 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
     }
   }, [remaining]);
 
-  const pubTokenHeartBeat = PubSub.subscribe(
-    topics.HEARTBEAT,
-    HeartBeatSubscriber
-  );
+  const pubTokenHeartBeat = PubSub.subscribe(HEARTBEAT, HeartBeatSubscriber);
 
   const pauser = () => {
     setPause(true);
@@ -104,7 +101,7 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
     if (startAudio.isPlaying) startAudio.toggle();
     if (endAudio.isPlaying) endAudio.toggle();
     //setVideoPlaying(false);
-    PubSub.publish(topics.VIDEO_PLAY, false);
+    PubSub.publish(VIDEO_PLAY, false);
 
     // setTimeout(() => {
 

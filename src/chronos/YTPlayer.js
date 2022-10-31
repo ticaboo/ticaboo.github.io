@@ -1,7 +1,7 @@
 import ReactPlayer from 'react-player/youtube';
 import { useEffect, useState } from 'react';
 import PubSub from 'pubsub-js';
-import topics from '../pub/topics';
+import { VIDEO_ID, VIDEO_PLAY } from '../pub/topics';
 
 const YTPlayer = () => {
   /*
@@ -35,8 +35,8 @@ const YTPlayer = () => {
   };
 
   //todo tokens = , destroy on dismount component.
-  PubSub.subscribe(topics.VIDEO_PLAY, videoPlayingChange);
-  PubSub.subscribe(topics.VIDEO_ID, videoUrlChange);
+  PubSub.subscribe(VIDEO_PLAY, videoPlayingChange);
+  PubSub.subscribe(VIDEO_ID, videoUrlChange);
 
   useEffect(() => {
     //console.log('YTplayer, videoPlaying changed detected:', videoPlaying);

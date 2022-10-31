@@ -35,7 +35,7 @@ export const OverClock = ({ seconds }) => {
         {' '}
         + {hms.h}:{hms.m}
       </span>
-      <span className="text-1xl mb-2"> {hms.s}</span>
+      <span className="text-1xl align-top"> {hms.s}</span>
     </div>
   );
 };

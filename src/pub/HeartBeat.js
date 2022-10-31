@@ -3,7 +3,7 @@ import React from 'react';
 import WorkerBuilder from '../workers/worker-builder';
 import Worker from '../workers/seconds.worker';
 import PubSub from 'pubsub-js';
-import topics from './topics';
+import { HEARTBEAT } from './topics';
 
 //want one heartbeat webworker ticking away for any/all to listen to.
 const instance = new WorkerBuilder(Worker);
@@ -32,7 +32,7 @@ const HeartBeat = () => {
   instance.onmessage = (message) => {
     // lish a topic asynchronously
     //console.log(message);
-    PubSub.publish(topics.HEARTBEAT, message);
+    PubSub.publish(HEARTBEAT, message);
   };
   return (
     <div data-t-heartbeat className="heart-beat ">

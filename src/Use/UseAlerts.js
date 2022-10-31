@@ -2,7 +2,7 @@ import { timeToSeconds, getPlaylistURL } from '../Utils';
 //import { useAtom } from 'jotai';
 //import { videoIDAtom, videoPlayingAtom } from '../atoms';
 import PubSub from 'pubsub-js';
-import topics from '../pub/topics';
+import { VIDEO_ID, VIDEO_PLAY } from '../pub/topics';
 
 //dont like this local global- timerData, need like this for now for UseAudio
 const useAlerts = (timerData) => {
@@ -22,8 +22,8 @@ const useAlerts = (timerData) => {
     //setTimeout(() => {
     // setVideoID(url); //'NrUIJY_Xu2s'-led zep california
     // setVideoPlaying(true);
-    PubSub.publish(topics.VIDEO_PLAY, true);
-    PubSub.publish(topics.VIDEO_ID, url);
+    PubSub.publish(VIDEO_PLAY, true);
+    PubSub.publish(VIDEO_ID, url);
     //console.log(url);
     // }, 100);
   };
@@ -32,7 +32,7 @@ const useAlerts = (timerData) => {
     //fire up YT player logic, placement?
     //console.log('tabHoldingPageLoad');
     //setVideoID('');
-    PubSub.publish(topics.VIDEO_PLAY, false);
+    PubSub.publish(VIDEO_PLAY, false);
 
     //console.log('tabHoldingPageLoad- STOP VDIEO!');
     //tabOpener(document.location.origin + '/assets/images/meditation.jpeg'); //todo - should e interstitial.

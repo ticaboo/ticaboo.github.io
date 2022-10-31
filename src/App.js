@@ -15,8 +15,9 @@ function App() {
   return (
     <div className="App">
       <HeartBeat />
-      <YTPlayer />
+
       <TimerGroup timers={timers} />
+      <YTPlayer />
       {/* <Schedule key="t1" timer={t1} />
       <Schedule key="t2" timer={t2} />
 
