@@ -36,7 +36,7 @@ const HeartBeat = () => {
   };
   return (
     <div data-t-heartbeat className="heart-beat ">
-      HeartBeat
+      HeartBeat Git
     </div>
   );
 };
