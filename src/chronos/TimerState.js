@@ -37,7 +37,7 @@ const TimerState = ({ timer }) => {
   const init = () => {
     active.current = true;
     setRemaining(timeToSeconds(timer.timer.h, timer.timer.m, timer.timer.s));
-    console.log('init', active.current, remaining);
+    console.log('init', active.current, remaining.current);
   };
 
   PubSub.subscribe(topics.HEARTBEAT, HeartBeatSubscriber);

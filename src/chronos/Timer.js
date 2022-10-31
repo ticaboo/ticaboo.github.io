@@ -237,7 +237,9 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
 
   // var token = //todo: destroy in effect return []
   PubSub.subscribe(topics.HEARTBEAT, HeartBeatSubscriber);
-  useEffect(() => start(), []);
+  useEffect(() => {
+    start();
+  });
 
   return (
     <div className="">

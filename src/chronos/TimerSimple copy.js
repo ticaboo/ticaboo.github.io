@@ -1,48 +1,48 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-
+import PubSub from 'pubsub-js';
+import topics from '../pub/topics';
+import { getAudioSrc, timeToSeconds, dateTohms } from '../Utils';
+import { Clock, OverClock } from './subcomponents/CounterClock';
 /*
 ok, code doesnt handle minutes, seconds, but it fucking works!
 see if can replace interval with heart beat.
-fix hms -> s.
+fix hms -> s.√
 display h m s
-*/
+
+
+NXT:
+    get seconds from timer.√
+    active (pause)
+    */
 
 const Timer = ({ timer }) => {
-  //   const { startingMinutes = 111, startingSeconds = 0 } = props;
-  console.log(timer);
-  const [mins, setMinutes] = useState(1); //timer.timer.m  '' -
-  const [secs, setSeconds] = useState(5);
+  const [remaining, setRemaining] = useState(
+    timeToSeconds(timer.timer.h, timer.timer.m, timer.timer.s)
+  );
+  const [pause, setPause] = useState(false);
+
+  const togglePause = () => {
+    setPause(!pause);
+  };
 
   useEffect(() => {
-    let sampleInterval = setInterval(() => {
-      if (secs > 0) {
-        setSeconds(secs - 1);
-      }
-      if (secs === 0) {
-        if (mins === 0) {
-          clearInterval(sampleInterval);
-        } else {
-          setMinutes(mins - 1);
-          setSeconds(59);
-        }
-      }
-    }, 1000);
-    return () => {
-      clearInterval(sampleInterval);
-    };
+    console.log(timer);
+    return () => {};
   });
+
+  var HeartBeatSubscriber = function (msg, data) {
+    if (!pause) {
+      setRemaining(remaining - 1);
+    }
+  };
+
+  PubSub.subscribe(topics.HEARTBEAT, HeartBeatSubscriber);
 
   return (
     <div>
-      {!(mins && secs) ? (
-        ''
-      ) : (
-        <p>
-          {' '}
-          {mins}:{secs < 10 ? `0${secs}` : secs}
-        </p>
-      )}
+      <Clock seconds={remaining} />
+      <button onClick={togglePause}>{pause ? 'play' : 'pause'}</button>
     </div>
   );
 };
