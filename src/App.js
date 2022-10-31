@@ -1,4 +1,5 @@
 import './App.css';
+import './tailwind.generated.css';
 import HeartBeat from './pub/HeartBeat';
 import { timerScheduled } from './data/timers';
 //import ScheduleGroup from './ScheduleGroup';
