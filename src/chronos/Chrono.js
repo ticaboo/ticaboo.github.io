@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-//import FormChronos from './subcomponents/FormChronos';
+import FormChronos from './subcomponents/FormChronos';
 import Timer from './Timer';
 //import useScheduler from '../Use/useScheduler';
 import CardAnimation from './subcomponents/buttons/CardAnimation';
@@ -88,7 +88,14 @@ const Chrono = ({
               {/* {hasSchedule() && (
                 <ScheduleNub timer={timer} handleSchedule={handleSchedule} />
               )} */}
-              Form
+              <FormChronos
+                timer={timer}
+                singleTimerFlag={singleTimerFlag}
+                submitter={submitter}
+                duplicateTimer={duplicateTimer}
+                removeTimer={removeTimer}
+                timers={timers}
+              />
             </div>
           )}
           {playerVisible && (

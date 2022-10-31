@@ -16,7 +16,7 @@ const ScheduleGroup = ({ timers }) => {
   const [schedules, setSchedules] = useState([]);
   //get timer that has changed.
   useEffect(() => {
-    console.log('timers changed detected in schedule group');
+    // console.log('timers changed detected in schedule group');
     const filtered = timers.filter((timer) => hasHms(timer.schedule));
     setSchedules(() => filtered);
     //console.log(filtered);

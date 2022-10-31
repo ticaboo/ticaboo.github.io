@@ -1,19 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import PubSub from 'pubsub-js';
 
-/*
-todo:
-    pass in timer prop from list
-
-*/
-console.log('sched file loaded');
-
 const Schedule = ({ timer }) => {
   const [timeNow, setTimeNow] = useState();
   const [alertAt, setAlertAt] = useState();
   const [active, setActive] = useState(); //so only fires once per day
   const activeLocal = useRef();
-  console.log('timer', timer);
+  // console.log('timer', timer);
 
   var HeartBeatSubscriber = function (msg, data) {
     //console.log(msg, data);
@@ -40,7 +33,7 @@ const Schedule = ({ timer }) => {
 
   useEffect(() => {
     //const inTenSeconds = timer.alertAt + 3000;
-    console.log('timer', timer);
+    //console.log('timer', timer);
     setAlertAt(timer.schedule.alertAt);
     activeLocal.current = true;
     setActive(true);
@@ -63,6 +56,9 @@ const Schedule = ({ timer }) => {
       Schedule: {alertAt} Time now: {timeNow} active:{' '}
       {active ? 'active' : 'deactivated'}
       {timer.schedule.alertAt}
+      <div>
+        {timer.schedule.h}:{timer.schedule.m}
+      </div>
     </div>
   );
 };
