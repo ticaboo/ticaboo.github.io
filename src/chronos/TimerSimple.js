@@ -37,7 +37,7 @@ NXT:
      timer jiggle on seconds change.
     */
 
-const Timer = ({ timer }) => {
+const Timer = ({ timer, setPlayerVisible }) => {
   //const [heartBeatDeltaMS, setHeartBeatDeltaMS] = useState(dateTohms().ms + 1);
 
   const [remaining, setRemaining] = useState(
@@ -103,7 +103,7 @@ const Timer = ({ timer }) => {
   };
   const edit = () => {
     pauser();
-    //setPlayerVisible(false);
+    setPlayerVisible(false);
   };
 
   const replay = () => {
