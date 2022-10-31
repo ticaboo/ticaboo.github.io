@@ -69,37 +69,39 @@ const Timer = ({ timer, setPlayerVisible }) => {
     HeartBeatSubscriber
   );
   const {
-    sayAloud,
-    tabOpener,
-    tabHoldingPageLoad,
-    intervalActive,
-    hasChainedAction,
-    intervalDuration,
-    getStartURL,
-    getEndURL
+    hasChainedAction
+    // intervalActive,
+    // sayAloud,
+    // tabOpener,
+    // intervalDuration,
+    // getStartURL,
+    // getEndURL
   } = useAlerts(timer);
 
   const pauser = () => {
+    setPause(true);
+    console.log('pauser()');
     if (startAudio.isPlaying) startAudio.toggle();
     if (endAudio.isPlaying) endAudio.toggle();
     //setVideoPlaying(false);
     PubSub.publish(topics.VIDEO_PLAY, false);
-    tabHoldingPageLoad();
-    //console.log('pause()');
-    setTimeout(() => {
-      setPause(true);
-    }, 100);
+
+    // setTimeout(() => {
+
+    //}, 100);
   };
   const resume = () => {
     setPause(false);
   };
   const edit = () => {
-    pause();
+    pauser();
     setPlayerVisible(false);
   };
 
   const replay = () => {
-    pauser();
+    setRemaining(timeToSeconds(timer.timer.h, timer.timer.m, timer.timer.s));
+    setPause(false);
+    //pauser();
     // setTimeout(() => {
     //   start();
     // }, 100);
@@ -161,8 +163,7 @@ const Timer = ({ timer, setPlayerVisible }) => {
         {/* {!active.current && <PlayButton title="Start" clickHandler={start} />} */}
         {!pause && (
           <div className="flex items-start text-green-500">
-            <PauseButton className="" title="Pause" clickHandler={pause} />
-            running-show pause
+            <PauseButton className="" title="Pause" clickHandler={pauser} />
             {/* <span className="text-xsm ml-2 mt-[10px]">
               {(direction === -1 && remaining > 0) || direction === 1
                 ? 'Active'
