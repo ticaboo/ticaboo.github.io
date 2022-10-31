@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import PubSub from 'pubsub-js';
-import { HEARTBEAT, VIDEO_ID, VIDEO_PLAY } from '../pub/topics';
+import { HEARTBEAT, VIDEO_PLAY } from '../pub/topics';
 import { getAudioSrc, timeToSeconds } from '../Utils';
 import { Clock, OverClock } from './subcomponents/CounterClock';
 import ReplayButton from './subcomponents/buttons/ReplayButton';
