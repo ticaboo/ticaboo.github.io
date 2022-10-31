@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import FormChronos from './subcomponents/FormChronos';
-import Timer from './Timer';
+import Timer from './TimerSimple';
 //import useScheduler from '../Use/useScheduler';
 import CardAnimation from './subcomponents/buttons/CardAnimation';
 
@@ -53,31 +53,31 @@ const Chrono = ({
     setPlayerVisible(() => true);
   };
 
-  const hasSchedule = () => {
-    l('info', 'chrono.hasSchedule()', {
-      schedule: timer.schedule,
-      logictest:
-        timer.schedule &&
-        (timer.schedule.h !== '' ||
-          timer.schedule.m !== '' ||
-          timer.schedule.s !== '')
-    });
-    const hasSched =
-      timer.schedule &&
-      (timer.schedule.h !== '' ||
-        timer.schedule.m !== '' ||
-        timer.schedule.s !== '');
-    l('info', 'hasSchedule', hasSched);
-    return hasSched;
-  };
+  // const hasSchedule = () => {
+  //   l('info', 'chrono.hasSchedule()', {
+  //     schedule: timer.schedule,
+  //     logictest:
+  //       timer.schedule &&
+  //       (timer.schedule.h !== '' ||
+  //         timer.schedule.m !== '' ||
+  //         timer.schedule.s !== '')
+  //   });
+  //   const hasSched =
+  //     timer.schedule &&
+  //     (timer.schedule.h !== '' ||
+  //       timer.schedule.m !== '' ||
+  //       timer.schedule.s !== '');
+  //   l('info', 'hasSchedule', hasSched);
+  //   return hasSched;
+  // };
 
-  const handleSchedule = () => {
-    // l('info','schedule triggered');
-    setTimeWatch(timer);
-    setTimeout(() => {
-      setPlayerVisible(true);
-    }, 100);
-  };
+  // const handleSchedule = () => {
+  //   // l('info','schedule triggered');
+  //   setTimeWatch(timer);
+  //   setTimeout(() => {
+  //     setPlayerVisible(true);
+  //   }, 100);
+  // };
 
   return (
     <>
@@ -102,7 +102,7 @@ const Chrono = ({
             <div>
               <Timer
                 key={timeWatch.id}
-                timerData={timeWatch}
+                timer={timeWatch}
                 setPlayerVisible={setPlayerVisible}
                 handleNextChainAction={handleNextChainAction}
               />

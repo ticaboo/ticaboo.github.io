@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import PubSub from 'pubsub-js';
 import topics from '../pub/topics';
 
@@ -14,21 +14,29 @@ import EditButton from './subcomponents/buttons/EditButton';
 import { getAudioSrc, timeToSeconds, dateTohms } from '../Utils';
 import useAlerts from '../Use/useAlerts';
 import { useAudio } from '../Use/useAudio';
-// import { useAtom } from 'jotai';
-// import { videoPlayingAtom } from '../atoms/index';
 
 const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
-  const [timeNow, setTimeNow] = useState();
-  const [alertAt, setAlertAt] = useState();
-  const [active, setActive] = useState(false);
-  const [originalDuration, setOriginalDuration] = useState();
+  // const [timeNow, setTimeNow] = useState();
+  // const [alertAt, setAlertAt] = useState();
+
+  const originalDuration = timeToSeconds(
+    timer.timer.h,
+    timer.timer.m,
+    timer.timer.s
+  );
+
   const [heartBeatDelta, setHeartBeatDelta] = useState();
   const [remaining, setRemaining] = useState();
-  const [direction, setDirection] = useState();
+  const direction =
+    timeToSeconds(timer.timer.h, timer.timer.m, timer.timer.s) === 0 ? 1 : -1;
 
-  const toggleActive = () => {
-    setActive(!active);
-  };
+  //const [active, setActive] = useState(false);
+  const active = useRef();
+  const [renderActive, setRenderActive] = useState(); //bridge to active ref?
+
+  // const toggleActive = () => {
+  //   setActive(!active);
+  // };
 
   const {
     sayAloud,
@@ -48,10 +56,14 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
     PubSub.publish(topics.VIDEO_PLAY, false);
     tabHoldingPageLoad();
     //console.log('pause()');
-    setTimeout(() => (active.current = false), 100);
+    setTimeout(() => {
+      active.current = false;
+      setRenderActive(false);
+    }, 100);
   };
   const resume = () => {
     active.current = true;
+    setRenderActive(true);
   };
   const edit = () => {
     pause();
@@ -86,7 +98,7 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
     const elapsed = originalDuration - remaining;
 
     if (direction === -1 && remaining === originalDuration) {
-      console.log('AT START of cycle');
+      console.log('AT START of cycle', direction);
       const startURL = getStartURL();
       if (startURL) tabOpener(startURL, '_ticabooPlayDuringUrl2');
 
@@ -163,13 +175,20 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
   };
 
   var HeartBeatSubscriber = function (msg, data) {
-    setTimeNow(data.data.now);
+    //setTimeNow(data.data.now);
+
     if (active.current) {
       setTimeout(() => {
         if (active.current) {
-          setRemaining((remaining) => {
-            return remaining + direction;
-          });
+          if (!remaining) {
+            setRemaining(originalDuration);
+          } else {
+            setRemaining((remaining) => {
+              return remaining + direction;
+            });
+          }
+          // setRemaining(remaining - 1);
+          console.log('remaining', remaining, heartBeatDelta);
           cycle();
         }
         //move this to cycle and add to options.
@@ -195,39 +214,45 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
 
     //setStartDate(new Date()); //just for checking timer accurate when comparing to end date.
 
-    const originalDurationEntry = timeToSeconds(
-      timer.timer.h,
-      timer.timer.m,
-      timer.timer.s
-    );
-    setOriginalDuration(originalDurationEntry);
-    setRemaining(originalDurationEntry);
-    setDirection(originalDurationEntry === 0 ? 1 : -1);
+    // const originalDurationEntry = timeToSeconds(
+    //   timer.timer.h,
+    //   timer.timer.m,
+    //   timer.timer.s
+    // );
+    // console.log('duration', originalDurationEntry);
+    //setOriginalDuration(() => originalDurationEntry);
+
+    //setDirection(() => (originalDurationEntry === 0 ? 1 : -1));
+    // console.log(
+    //   'onstart orig:',
+    //   originalDuration,
+    //   'remaining',
+    //   remaining,
+    //   ' direction: ',
+    //   direction
+    // );
     active.current = true;
+    setRenderActive(true);
   };
 
-  var token = PubSub.subscribe(topics.HEARTBEAT, HeartBeatSubscriber);
+  // var token = //todo: destroy in effect return []
+  PubSub.subscribe(topics.HEARTBEAT, HeartBeatSubscriber);
+  useEffect(() => start(), []);
 
   return (
     <div className="">
       <div className="ml-1 mb-2 pl-2 h-10 ">
         <div className="trimmed">
-          {' '}
           <span className="text-2xl max-w-fit">{timer.timer.name}</span>
-          {/* </span>{' '}
-          <span className="text-2xl max-w-2xl">
-            {formatTimerInfo(timer.timer)}
-          */}
         </div>
-
         <div className="text-xs -mt-1 trimmed">
           {formatTimerInfo(timer.interval, 'interval: ')}
         </div>
       </div>
       <div className="">
         {remaining <= 0 && direction === -1 && (
-          // overtime
           <>
+            overtime
             <p className="flex justify-center text-green-500">
               <span className="text-5xl">00:00</span>
               <span className="text-2xl">00</span>
@@ -244,18 +269,18 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
           </div>
         )}
         {direction === 1 && (
-          // stopwatch
           <div className="flex justify-center">
+            'stopwatch'
             <Clock seconds={remaining} />
           </div>
         )}
       </div>
       <div className="flex justify-between mr-2 mb-2 ">
         {/* {!active.current && <PlayButton title="Start" clickHandler={start} />} */}
-        {active.current && (
+        {renderActive && (
           <div className="flex items-start text-green-500">
             <PauseButton className="" title="Pause" clickHandler={pause} />
-
+            running-show pause
             {/* <span className="text-xsm ml-2 mt-[10px]">
               {(direction === -1 && remaining > 0) || direction === 1
                 ? 'Active'
@@ -263,15 +288,16 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
             </span> */}
           </div>
         )}
-        {!active.current && (
+        {!renderActive && (
           <div className="flex items-start">
+            paused
             <PlayButton title="Start" clickHandler={resume} />
             <span className="text-xsm text-neutral-400 ml-2 ">
               {/* Paused */}
             </span>
           </div>
         )}
-        {!active.current && (
+        {!renderActive && (
           <div>
             <ReplayButton clickHandler={replay} />
             <EditButton title="Edit" clickHandler={edit} />

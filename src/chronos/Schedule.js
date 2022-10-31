@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import PubSub from 'pubsub-js';
 
 const Schedule = ({ timer }) => {
-  const [timeNow, setTimeNow] = useState();
+  const [, setTimeNow] = useState();
   const [alertAt, setAlertAt] = useState();
   const [active, setActive] = useState(); //so only fires once per day
   const activeLocal = useRef();
@@ -47,7 +47,7 @@ const Schedule = ({ timer }) => {
     return () => {
       PubSub.unsubscribe(token);
     };
-  }, []);
+  }); //todo: check works as component mount, dismount without , []
 
   var token = PubSub.subscribe('HEARTBEAT', HeartBeatSubscriber); //cleanup on component destroy
 

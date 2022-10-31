@@ -7,13 +7,13 @@ const ScheduleDisplay = ({ timer }) => {
   const { watch } = useFormContext();
   const schedule = watch('schedule');
 
-  const hasSchedule = () => {
-    //console.log(timer.schedule);
-    if (!schedule) return false;
-    if (schedule.h !== '' && schedule.m !== '' && schedule.s !== '')
-      return false;
-    return true;
-  };
+  // const hasSchedule = () => {
+  //   //console.log(timer.schedule);
+  //   if (!schedule) return false;
+  //   if (schedule.h !== '' && schedule.m !== '' && schedule.s !== '')
+  //     return false;
+  //   return true;
+  // };
 
   return (
     <>
