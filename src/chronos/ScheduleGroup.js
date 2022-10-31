@@ -28,7 +28,6 @@ const ScheduleGroup = ({ timers }) => {
       {schedules.map((timer) => (
         <div key={timer.id}>
           <Schedule timer={timer} />
-          xxx
         </div>
       ))}
     </div>

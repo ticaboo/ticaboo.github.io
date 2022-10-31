@@ -53,9 +53,9 @@ const Schedule = ({ timer }) => {
 
   return (
     <div data-t-schedule className="schedule" data-schedule>
-      Schedule: {alertAt} Time now: {timeNow} active:{' '}
-      {active ? 'active' : 'deactivated'}
-      {timer.schedule.alertAt}
+      {/* Schedule: {alertAt} Time now: {timeNow}  */}
+      {active ? 'pending' : 'done'}
+      {/* {timer.schedule.alertAt} */}
       <div>
         {timer.schedule.h}:{timer.schedule.m}
       </div>

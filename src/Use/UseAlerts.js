@@ -1,11 +1,13 @@
 import { timeToSeconds, getPlaylistURL } from '../Utils';
-import { useAtom } from 'jotai';
-import { videoIDAtom, videoPlayingAtom } from '../atoms';
+//import { useAtom } from 'jotai';
+//import { videoIDAtom, videoPlayingAtom } from '../atoms';
+import PubSub from 'pubsub-js';
+import topics from '../pub/topics';
 
 //dont like this local global- timerData, need like this for now for UseAudio
-const UseAlerts = (timerData) => {
-  const [, setVideoPlaying] = useAtom(videoPlayingAtom);
-  const [, setVideoID] = useAtom(videoIDAtom);
+const useAlerts = (timerData) => {
+  // const [, setVideoPlaying] = useAtom(videoPlayingAtom);
+  // const [, setVideoID] = useAtom(videoIDAtom);
 
   const sayAloud = (announce) => {
     speechSynthesis.cancel();
@@ -18,9 +20,10 @@ const UseAlerts = (timerData) => {
     // dirty diry render hack to prevent:
     // Cannot update a component (`YTPlayer`) while rendering a different component (`PlayChronos`).
     //setTimeout(() => {
-
-    setVideoID(url); //'NrUIJY_Xu2s'-led zep california
-    setVideoPlaying(true);
+    // setVideoID(url); //'NrUIJY_Xu2s'-led zep california
+    // setVideoPlaying(true);
+    PubSub.publish(topics.VIDEO_PLAY, true);
+    PubSub.publish(topics.VIDEO_ID, url);
     //console.log(url);
     // }, 100);
   };
@@ -29,7 +32,7 @@ const UseAlerts = (timerData) => {
     //fire up YT player logic, placement?
     //console.log('tabHoldingPageLoad');
     //setVideoID('');
-    setVideoPlaying(false);
+    PubSub.publish(topics.VIDEO_PLAY, false);
 
     //console.log('tabHoldingPageLoad- STOP VDIEO!');
     //tabOpener(document.location.origin + '/assets/images/meditation.jpeg'); //todo - should e interstitial.
@@ -103,4 +106,4 @@ const UseAlerts = (timerData) => {
   };
 };
 
-export default UseAlerts;
+export default useAlerts;

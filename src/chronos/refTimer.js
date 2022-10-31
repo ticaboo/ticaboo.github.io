@@ -1,7 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
-import PubSub from 'pubsub-js';
-import topics from '../pub/topics';
-
+import { useEffect, useState, useRef } from 'react';
 // import './App.css'; //notification animations?
 import { formatTimerInfo } from '../Utils';
 import { Clock, OverClock } from './subcomponents/CounterClock';
@@ -12,23 +9,27 @@ import EditButton from './subcomponents/buttons/EditButton';
 
 //import notify from './notifiy';
 import { getAudioSrc, timeToSeconds, dateTohms } from '../Utils';
-import useAlerts from '../Use/useAlerts';
+import UseAlerts from '../Use/useAlerts';
 import { useAudio } from '../Use/useAudio';
-// import { useAtom } from 'jotai';
-// import { videoPlayingAtom } from '../atoms/index';
+import { useAtom } from 'jotai';
+import { videoPlayingAtom } from '../atoms/index';
+import PubSub from 'pubsub-js';
+import topics from '../pub/topics';
 
-const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
-  const [timeNow, setTimeNow] = useState();
-  const [alertAt, setAlertAt] = useState();
-  const [active, setActive] = useState(false);
+//import Stopwatch from './workers/Stopwatch';
+
+function Timer({ timerData, setPlayerVisible, handleNextChainAction }) {
+  const [startDate, setStartDate] = useState();
+
   const [originalDuration, setOriginalDuration] = useState();
   const [heartBeatDelta, setHeartBeatDelta] = useState();
   const [remaining, setRemaining] = useState();
-  const [direction, setDirection] = useState();
 
-  const toggleActive = () => {
-    setActive(!active);
-  };
+  //const [isActive.current, isActive.current =] = useState(false);
+  const isActive = useRef();
+  const [direction, setDirection] = useState();
+  const [, setVideoPlaying] = useAtom(videoPlayingAtom);
+  // const [videoID, setVideoID] = useAtom(videoIDAtom);
 
   const {
     sayAloud,
@@ -39,47 +40,7 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
     intervalDuration,
     getStartURL,
     getEndURL
-  } = useAlerts(timer);
-
-  const pause = () => {
-    if (startAudio.isPlaying) startAudio.toggle();
-    if (endAudio.isPlaying) endAudio.toggle();
-    //setVideoPlaying(false);
-    PubSub.publish(topics.VIDEO_PLAY, false);
-    tabHoldingPageLoad();
-    //console.log('pause()');
-    setTimeout(() => (active.current = false), 100);
-  };
-  const resume = () => {
-    active.current = true;
-  };
-  const edit = () => {
-    pause();
-    setPlayerVisible(false);
-  };
-
-  const replay = () => {
-    pause();
-    setTimeout(() => {
-      start();
-    }, 100);
-  };
-  const intervalAudio = useAudio({
-    src: getAudioSrc(timer.interval.alert, 'IntervalSounds'),
-    loop: false
-  });
-
-  const endAudio = useAudio({
-    src: getAudioSrc(timer.timer.alert, 'AlarmSounds'),
-    loop: hasChainedAction(timer) ? false : true,
-    amplificationMultiplier: 1
-  });
-
-  const startAudio = useAudio({
-    src: getAudioSrc(timer.timer.startAlert, 'AlarmSounds'),
-    loop: false,
-    amplificationMultiplier: 1
-  });
+  } = UseAlerts(timerData);
 
   const cycle = () => {
     const stopSecond = 1;
@@ -90,12 +51,12 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
       const startURL = getStartURL();
       if (startURL) tabOpener(startURL, '_ticabooPlayDuringUrl2');
 
-      if (timer.timer.hasStartAnnounce) {
-        //debounce( ()=>  {sayAloud(timer.timer.startAnnounce)},100);
-        sayAloud(timer.timer.startAnnounce);
+      if (timerData.timer.hasStartAnnounce) {
+        //debounce( ()=>  {sayAloud(timerData.timer.startAnnounce)},100);
+        sayAloud(timerData.timer.startAnnounce);
       }
 
-      if (timer.timer.hasStartAlert) {
+      if (timerData.timer.hasStartAlert) {
         /* play alert sound */
         startAudio.toggle();
         startAudio.reset();
@@ -110,7 +71,7 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
 
     //Timer done:
     if (direction === -1 && remaining === stopSecond) {
-      if (timer.timer.hasAlert) {
+      if (timerData.timer.hasAlert) {
         /* play alert sound */
         endAudio.toggle();
         endAudio.reset();
@@ -131,14 +92,14 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
         tabHoldingPageLoad();
       }
 
-      if (timer.timer.hasAnnounce) {
-        sayAloud(timer.timer.announce); /* speak at end */
+      if (timerData.timer.hasAnnounce) {
+        sayAloud(timerData.timer.announce); /* speak at end */
       }
       if (hasChainedAction() === true) {
         //start chained timer.-so that it starts playing is the trick!
-        //console.log('chain ganging', timer.chaining.onend.chainId)
+        //console.log('chain ganging', timerData.chaining.onend.chainId)
         //TODO: kill current timer, Chronos starts next one. instead of:  clearInterval(countRef.current);
-        handleNextChainAction(timer.chaining.onend.chainId);
+        handleNextChainAction(timerData.chaining.onend.chainId);
       }
 
       // doneCB(chainActionId);
@@ -152,40 +113,34 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
       (elapsed + 1) % intervalDuration() === 0
     ) {
       if (direction === -1 && remaining !== originalDuration && remaining > 1) {
-        if (timer.interval.hasAlert) {
+        if (timerData.interval.hasAlert) {
           intervalAudio.toggle();
         }
-        if (timer.interval.hasAnnounce) sayAloud(timer.interval.announce);
+        if (timerData.interval.hasAnnounce)
+          sayAloud(timerData.interval.announce);
         //CB halts block - never reaches return... (useCallBack?)/simpler? props/ref?
         //intervalCB();
       }
     }
   };
 
-  var HeartBeatSubscriber = function (msg, data) {
-    setTimeNow(data.data.now);
-    if (active.current) {
-      setTimeout(() => {
-        if (active.current) {
-          setRemaining((remaining) => {
-            return remaining + direction;
-          });
-          cycle();
-        }
-        //move this to cycle and add to options.
-        if (remaining === 0) {
-          // notify('started: ' + startDate + 'ended: ' + new Date());
-          //note: remains active to display overtimer.
-        }
-      }, heartBeatDelta);
-    }
-  };
+  const intervalAudio = useAudio({
+    src: getAudioSrc(timerData.interval.alert, 'IntervalSounds'),
+    loop: false
+  });
 
-  /*
-    Timer component on load fires start.
-    which sets active.current = true.
-    HeartBeatSubscriber activates. calls cycle()
-  */
+  const endAudio = useAudio({
+    src: getAudioSrc(timerData.timer.alert, 'AlarmSounds'),
+    loop: hasChainedAction(timerData) ? false : true,
+    amplificationMultiplier: 1
+  });
+
+  const startAudio = useAudio({
+    src: getAudioSrc(timerData.timer.startAlert, 'AlarmSounds'),
+    loop: false,
+    amplificationMultiplier: 1
+  });
+
   const start = () => {
     console.log('Timer.start()');
     const now = dateTohms();
@@ -193,35 +148,88 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
     setHeartBeatDelta(now.ms + 1); //add 1ms for execution time
     //console.log('start heartBeatDelta ', heartBeatDelta);
 
-    //setStartDate(new Date()); //just for checking timer accurate when comparing to end date.
+    setStartDate(new Date()); //just for checking timer accurate when comparing to end date.
 
     const originalDurationEntry = timeToSeconds(
-      timer.timer.h,
-      timer.timer.m,
-      timer.timer.s
+      timerData.timer.h,
+      timerData.timer.m,
+      timerData.timer.s
     );
     setOriginalDuration(originalDurationEntry);
     setRemaining(originalDurationEntry);
     setDirection(originalDurationEntry === 0 ? 1 : -1);
-    active.current = true;
+    isActive.current = true;
   };
 
-  var token = PubSub.subscribe(topics.HEARTBEAT, HeartBeatSubscriber);
+  const pause = () => {
+    if (startAudio.isPlaying) startAudio.toggle();
+    if (endAudio.isPlaying) endAudio.toggle();
+    setVideoPlaying(false);
+    tabHoldingPageLoad();
+    //console.log('pause()');
+    setTimeout(() => (isActive.current = false), 100);
+  };
+  const resume = () => {
+    isActive.current = true;
+  };
+  const edit = () => {
+    pause();
+    setPlayerVisible(false);
+  };
+
+  const replay = () => {
+    pause();
+    setTimeout(() => {
+      start();
+    }, 100);
+  };
+
+  /*
+   kick off cycle. sync to heartbeat - offset to when timer started.
+  */
+  var heartBeatSubscriber = function (msg, data) {
+    console.log('ba boom');
+    //const now = data.data.now;
+
+    // if (isActive.current) {
+    //   setTimeout(() => {
+    //     if (isActive.current) {
+    //       setRemaining((remaining) => {
+    //         return remaining + direction;
+    //       });
+    //       cycle();
+    //     }
+    //     //move this to cycle and add to options.
+    //     if (remaining === 0) {
+    //       // notify('started: ' + startDate + 'ended: ' + new Date());
+    //       //note: remains active to display overtimer.
+    //     }
+    //   }, heartBeatDelta);
+    // }
+  };
+
+  var token = PubSub.subscribe(topics.HEARTBEAT, heartBeatSubscriber); //cleanup on component destroy
+
+  // useEffect(() => {
+  //   console.log('active changed', isActive.current);
+  // }, [isActive.current]);
+  // bizzare - with start - no () works in dev, with start() works in prod
+  useEffect(() => start(), []);
 
   return (
     <div className="">
       <div className="ml-1 mb-2 pl-2 h-10 ">
         <div className="trimmed">
           {' '}
-          <span className="text-2xl max-w-fit">{timer.timer.name}</span>
+          <span className="text-2xl max-w-fit">{timerData.timer.name}</span>
           {/* </span>{' '}
           <span className="text-2xl max-w-2xl">
-            {formatTimerInfo(timer.timer)}
+            {formatTimerInfo(timerData.timer)}
           */}
         </div>
 
         <div className="text-xs -mt-1 trimmed">
-          {formatTimerInfo(timer.interval, 'interval: ')}
+          {formatTimerInfo(timerData.interval, 'interval: ')}
         </div>
       </div>
       <div className="">
@@ -251,8 +259,8 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
         )}
       </div>
       <div className="flex justify-between mr-2 mb-2 ">
-        {/* {!active.current && <PlayButton title="Start" clickHandler={start} />} */}
-        {active.current && (
+        {/* {!isActive.current && <PlayButton title="Start" clickHandler={start} />} */}
+        {isActive.current && (
           <div className="flex items-start text-green-500">
             <PauseButton className="" title="Pause" clickHandler={pause} />
 
@@ -263,7 +271,7 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
             </span> */}
           </div>
         )}
-        {!active.current && (
+        {!isActive.current && (
           <div className="flex items-start">
             <PlayButton title="Start" clickHandler={resume} />
             <span className="text-xsm text-neutral-400 ml-2 ">
@@ -271,7 +279,7 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
             </span>
           </div>
         )}
-        {!active.current && (
+        {!isActive.current && (
           <div>
             <ReplayButton clickHandler={replay} />
             <EditButton title="Edit" clickHandler={edit} />
@@ -283,14 +291,21 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
       direction:{direction} */}
     </div>
   );
-
   // return (
-  //   <div data-t-timer>
-  //     Timer
-  //     <button onClick={toggleActive}> {active ? 'Playing' : 'paused'}</button>
-  //     <div>{active ? timeNow : ''}</div>
+  //   <div className="Timer">
+  //     <header className="Timer-header">
+  //       <button onClick={handleStart}>
+  //         start timer {remaining}s.
+  //         {/* <Stopwatch running={isActive.current} /> */}
+  //       </button>
+  //       <button onClick={handlePause}>pause .</button>
+  //       <button onClick={handleResume}>resume .</button>
+  //       <button onClick={handleReset}>reset .</button>
+
+  //       {/* duration: {duration} */}
+  //     </header>
   //   </div>
   // );
-};
+}
 
 export default Timer;
