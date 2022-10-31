@@ -239,6 +239,7 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
   PubSub.subscribe(topics.HEARTBEAT, HeartBeatSubscriber);
   useEffect(() => {
     start();
+    return () => {};
   });
 
   return (

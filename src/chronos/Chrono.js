@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import FormChronos from './subcomponents/FormChronos';
-import Timer from './Timer';
+import Timer from './TimerSimple';
 //import useScheduler from '../Use/useScheduler';
 import CardAnimation from './subcomponents/buttons/CardAnimation';
 
