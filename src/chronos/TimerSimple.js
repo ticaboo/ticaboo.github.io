@@ -43,6 +43,9 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
   const [remaining, setRemaining] = useState(
     timeToSeconds(timer.timer.h, timer.timer.m, timer.timer.s)
   );
+  const [originalDuration, setOriginalDuration] = useState(
+    timeToSeconds(timer.timer.h, timer.timer.m, timer.timer.s)
+  );
   const [pause, setPause] = useState(false);
   const direction =
     timeToSeconds(timer.timer.h, timer.timer.m, timer.timer.s) === 0 ? 1 : -1;
@@ -52,8 +55,8 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
     tabOpener,
     tabHoldingPageLoad,
     hasChainedAction,
-    //intervalActive,
-    // intervalDuration,
+    intervalActive,
+    intervalDuration,
     getStartURL,
     getEndURL
   } = useAlerts(timer);
@@ -72,12 +75,94 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
     }
   };
 
+  const cycle = () => {
+    const stopSecond = 1;
+    const elapsed = originalDuration - remaining;
+
+    if (direction === -1 && remaining === originalDuration) {
+      console.log('AT START of cycle');
+      const startURL = getStartURL();
+      if (startURL) tabOpener(startURL, '_ticabooPlayDuringUrl2');
+
+      if (timer.timer.hasStartAnnounce) {
+        //debounce( ()=>  {sayAloud(timer.timer.startAnnounce)},100);
+        sayAloud(timer.timer.startAnnounce);
+      }
+
+      if (timer.timer.hasStartAlert) {
+        /* play alert sound */
+        startAudio.toggle();
+        startAudio.reset();
+      }
+    }
+
+    //when startUrl and endingURl- make 5 second sound gap before end.
+    if (direction === -1 && remaining === 5) {
+      const startURL = getStartURL();
+      if (startURL) tabHoldingPageLoad();
+    }
+
+    //Timer done:
+    if (direction === -1 && remaining === stopSecond) {
+      if (timer.timer.hasAlert) {
+        /* play alert sound */
+        endAudio.toggle();
+        endAudio.reset();
+      }
+
+      const atEndStartURL = getStartURL();
+      const atEndEndURL = getEndURL();
+
+      if (atEndEndURL) {
+        /* end - play end */
+        //setVideoPlaying(false);
+        tabOpener(atEndEndURL, '_ticabooPlayDuringUrl2');
+      }
+
+      if (atEndStartURL && !atEndStartURL) {
+        /* start + no end - halt. */
+        //setVideoPlaying(()=> false);
+        tabHoldingPageLoad();
+      }
+
+      if (timer.timer.hasAnnounce) {
+        sayAloud(timer.timer.announce); /* speak at end */
+      }
+      if (hasChainedAction() === true) {
+        //start chained timer.-so that it starts playing is the trick!
+        //console.log('chain ganging', timer.chaining.onend.chainId)
+        //TODO: kill current timer, Chronos starts next one. instead of:  clearInterval(countRef.current);
+        handleNextChainAction(timer.chaining.onend.chainId);
+      }
+
+      // doneCB(chainActionId);
+      //tick interval continues for overtiming unless timer has a next chained timer.
+    }
+
+    //Intervals
+    if (
+      intervalActive() &&
+      remaining > 1 &&
+      (elapsed + 1) % intervalDuration() === 0
+    ) {
+      if (direction === -1 && remaining !== originalDuration && remaining > 1) {
+        if (timer.interval.hasAlert) {
+          intervalAudio.toggle();
+        }
+        if (timer.interval.hasAnnounce) sayAloud(timer.interval.announce);
+        //CB halts block - never reaches return... (useCallBack?)/simpler? props/ref?
+        //intervalCB();
+      }
+    }
+  };
+
   /*
   Does the trick. have to access remaining in useEffect hook. duh
   do cycle in here 
   */
   useEffect(() => {
     //console.log('remaining', remaining);
+    cycle();
     if (remaining === -1) {
       console.log('TRIG', remaining);
       //   startAudio.toggle();
@@ -86,10 +171,10 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
       //   endAudio.reset();
       //sayAloud(timer.timer.startAnnounce);
       //const atEndStartURL = getStartURL();
-      const atEndEndURL = getEndURL();
-      if (atEndEndURL) {
-        tabOpener(atEndEndURL, '_ticabooPlayDuringUrl2');
-      }
+      //   const atEndEndURL = getEndURL();
+      //   if (atEndEndURL) {
+      //     tabOpener(atEndEndURL, '_ticabooPlayDuringUrl2');
+      //   }
     }
   }, [remaining]);
 
@@ -133,6 +218,11 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
     src: getAudioSrc(timer.timer.alert, 'AlarmSounds'),
     loop: hasChainedAction(timer) ? false : true,
     amplificationMultiplier: 1
+  });
+
+  const intervalAudio = useAudio({
+    src: getAudioSrc(timer.interval.alert, 'IntervalSounds'),
+    loop: false
   });
 
   return (
