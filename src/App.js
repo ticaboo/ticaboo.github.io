@@ -4,6 +4,7 @@ import HeartBeat from './pub/HeartBeat';
 import { timerScheduled } from './data/timers';
 //import ScheduleGroup from './ScheduleGroup';
 import TimerGroup from './chronos/TimerGroup';
+import YTPlayer from './chronos/YTPlayer';
 
 const t1 = { ...timerScheduled, schedule: { alertAt: Date.now() + 5000 } };
 const t2 = { ...timerScheduled, schedule: { alertAt: Date.now() + 10000 } };
@@ -14,6 +15,7 @@ function App() {
   return (
     <div className="App">
       <HeartBeat />
+      <YTPlayer />
       <TimerGroup timers={timers} />
       {/* <Schedule key="t1" timer={t1} />
       <Schedule key="t2" timer={t2} />

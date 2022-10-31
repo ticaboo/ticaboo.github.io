@@ -48,11 +48,11 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
     timeToSeconds(timer.timer.h, timer.timer.m, timer.timer.s) === 0 ? 1 : -1;
 
   const {
-    // sayAloud,
-    // tabOpener,
-    // tabHoldingPageLoad,
-    // intervalActive,
+    sayAloud,
+    tabOpener,
+    tabHoldingPageLoad,
     hasChainedAction,
+    //intervalActive,
     // intervalDuration,
     getStartURL,
     getEndURL
@@ -77,13 +77,19 @@ const Timer = ({ timer, setPlayerVisible, handleNextChainAction }) => {
   do cycle in here 
   */
   useEffect(() => {
-    console.log('remaining', remaining);
-    if (remaining === 0) {
+    //console.log('remaining', remaining);
+    if (remaining === -1) {
       console.log('TRIG', remaining);
       //   startAudio.toggle();
       //   startAudio.reset();
       //   endAudio.toggle();
       //   endAudio.reset();
+      //sayAloud(timer.timer.startAnnounce);
+      //const atEndStartURL = getStartURL();
+      const atEndEndURL = getEndURL();
+      if (atEndEndURL) {
+        tabOpener(atEndEndURL, '_ticabooPlayDuringUrl2');
+      }
     }
   }, [remaining]);
 
