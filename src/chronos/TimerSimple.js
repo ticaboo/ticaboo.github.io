@@ -9,8 +9,8 @@ import PlayButton from './subcomponents/buttons/PlayButton';
 import PauseButton from './subcomponents/buttons/PauseButton ';
 import EditButton from './subcomponents/buttons/EditButton';
 
-import useAlerts from '../Use/useAlerts';
-import { useAudio } from '../Use/useAudio';
+//import useAlerts from '../Use/useAlerts';
+//import { useAudio } from '../Use/useAudio';
 //import notify from './notifiy';
 /*
 ok, code doesnt handle minutes, seconds, but it fucking works!
@@ -37,7 +37,7 @@ NXT:
      timer jiggle on seconds change.
     */
 
-const Timer = ({ timer, setPlayerVisible }) => {
+const Timer = ({ timer }) => {
   //const [heartBeatDeltaMS, setHeartBeatDeltaMS] = useState(dateTohms().ms + 1);
 
   const [remaining, setRemaining] = useState(
@@ -52,7 +52,8 @@ const Timer = ({ timer, setPlayerVisible }) => {
   //   };
 
   useEffect(() => {
-    console.log(timer);
+    //console.log(timer);
+    //setRemaining(timeToSeconds(timer.timer.h, timer.timer.m, timer.timer.s));
     return () => {
       PubSub.unsubscribe(pubTokenHeartBeat);
     };
@@ -64,25 +65,32 @@ const Timer = ({ timer, setPlayerVisible }) => {
     }
   };
 
+  useEffect(() => {
+    console.log('remaining', remaining);
+    if (remaining === 0) {
+      console.log('TRIG', remaining);
+    }
+  }, [remaining]);
+
   const pubTokenHeartBeat = PubSub.subscribe(
     topics.HEARTBEAT,
     HeartBeatSubscriber
   );
-  const {
-    hasChainedAction
-    // intervalActive,
-    // sayAloud,
-    // tabOpener,
-    // intervalDuration,
-    // getStartURL,
-    // getEndURL
-  } = useAlerts(timer);
+  //   const {
+  //     hasChainedAction
+  //     // intervalActive,
+  //     // sayAloud,
+  //     // tabOpener,
+  //     // intervalDuration,
+  //     // getStartURL,
+  //     // getEndURL
+  //   } = useAlerts(timer);
 
   const pauser = () => {
     setPause(true);
     console.log('pauser()');
-    if (startAudio.isPlaying) startAudio.toggle();
-    if (endAudio.isPlaying) endAudio.toggle();
+    // if (startAudio.isPlaying) startAudio.toggle();
+    // if (endAudio.isPlaying) endAudio.toggle();
     //setVideoPlaying(false);
     PubSub.publish(topics.VIDEO_PLAY, false);
 
@@ -95,7 +103,7 @@ const Timer = ({ timer, setPlayerVisible }) => {
   };
   const edit = () => {
     pauser();
-    setPlayerVisible(false);
+    //setPlayerVisible(false);
   };
 
   const replay = () => {
@@ -106,22 +114,6 @@ const Timer = ({ timer, setPlayerVisible }) => {
     //   start();
     // }, 100);
   };
-  const intervalAudio = useAudio({
-    src: getAudioSrc(timer.interval.alert, 'IntervalSounds'),
-    loop: false
-  });
-
-  const endAudio = useAudio({
-    src: getAudioSrc(timer.timer.alert, 'AlarmSounds'),
-    loop: hasChainedAction(timer) ? false : true,
-    amplificationMultiplier: 1
-  });
-
-  const startAudio = useAudio({
-    src: getAudioSrc(timer.timer.startAlert, 'AlarmSounds'),
-    loop: false,
-    amplificationMultiplier: 1
-  });
 
   return (
     <div className="">
